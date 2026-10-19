@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" fillWidth="false" prefHeight="550.0" prefWidth="800.0" spacing="20"
+      style="-fx-padding: 20; -fx-background-color: linear-gradient(to bottom, #f0f4f8, #e2e8f0);"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Сlient.AddInfoClientController">
+
+    <!-- Modern header with gradient and shadow -->
+    <HBox alignment="CENTER" prefHeight="70.0" prefWidth="760.0"
+          style="-fx-background-color: linear-gradient(to right, #0ea5e9, #10b981); -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);">
+        <Label alignment="CENTER" prefHeight="42.0" prefWidth="760.0"
+               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 32; -fx-font-weight: bold;"
+               text="Добавление личной информации" textFill="white" />
+    </HBox>
+
+    <AnchorPane prefHeight="414.0" prefWidth="760.0">
+        <children>
+            <VBox layoutX="326.0" layoutY="14.0" prefHeight="312.0" prefWidth="420.0"
+                  style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);">
+                <children>
+                    <TextField fx:id="lastNameField" promptText="Фамилия"
+                               style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 18; -fx-padding: 10;">
+                        <VBox.margin><Insets bottom="15.0" left="15.0" right="15.0" top="25.0" /></VBox.margin>
+                    </TextField>
+                    <TextField fx:id="firstNameField" promptText="Имя"
+                               style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 18; -fx-padding: 10;">
+                        <VBox.margin><Insets bottom="15.0" left="15.0" right="15.0" /></VBox.margin>
+                    </TextField>
+                    <TextField fx:id="middleNameField" promptText="Отчество"
+                               style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 18; -fx-padding: 10;">
+                        <VBox.margin><Insets bottom="15.0" left="15.0" right="15.0" /></VBox.margin>
+                    </TextField>
+                    <TextField fx:id="phoneNumberField" promptText="Телефон"
+                               style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 18; -fx-padding: 10;">
+                        <VBox.margin><Insets bottom="25.0" left="15.0" right="15.0" /></VBox.margin>
+                    </TextField>
+                </children>
+            </VBox>
+
+            <Button fx:id="saveButton" layoutX="411.0" layoutY="336.0" onAction="#saveClientInfo"
+                    style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 18; -fx-font-weight: bold; -fx-pref-height: 45; -fx-pref-width: 220; -fx-background-color: #8b5cf6; -fx-text-fill: white;">
+                <effect>
+                    <DropShadow color="rgba(139,92,246,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                </effect>
+                Сохранить
+            </Button>
+
+            <Button fx:id="backButton" layoutX="96.0" layoutY="341.0" onAction="#handleBack"
+                    onMouseEntered="#handleMouseEnterExit" onMouseExited="#handleMouseExitExit"
+                    prefHeight="40.0" prefWidth="150.0"
+                    style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-color: #64748b; -fx-text-fill: white;">
+                <effect>
+                    <DropShadow color="rgba(100,116,139,0.3)" radius="6" offsetX="0" offsetY="3"/>
+                </effect>
+                Назад
+            </Button>
+
+            <ImageView fitHeight="239.0" fitWidth="218.0" layoutX="52.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
+
+            </ImageView>
+        </children>
+    </AnchorPane>
+</VBox>

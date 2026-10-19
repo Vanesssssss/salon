@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" fillWidth="false" prefHeight="550.0" prefWidth="800.0" spacing="20"
+      style="-fx-padding: 20; -fx-background-color: linear-gradient(to bottom, #f0f4f8, #e2e8f0);"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Сlient.InfoClientController">
+
+   <!-- Modern header with gradient and shadow -->
+   <HBox alignment="CENTER" prefHeight="70.0" prefWidth="760.0" style="-fx-background-color: linear-gradient(to right, #0ea5e9, #10b981); -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);">
+      <Label alignment="CENTER" prefHeight="42.0" prefWidth="760.0"
+             style="-fx-font-family: 'Segoe UI'; -fx-font-size: 32; -fx-font-weight: bold;"
+             text="Личная информация" textFill="white" />
+   </HBox>
+
+   <AnchorPane prefHeight="422.0" prefWidth="772.0">
+      <children>
+         <HBox layoutX="212.0" layoutY="7.0" prefHeight="274.0" prefWidth="545.0"
+               style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);">
+            <children>
+               <VBox alignment="CENTER_LEFT" prefHeight="274.0" prefWidth="226.0">
+                  <children>
+                     <Label style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="Логин:" textFill="#1e293b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" left="20.0" top="15.0" /></VBox.margin>
+                     </Label>
+                     <Label style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="Фамилия:" textFill="#1e293b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" left="20.0" /></VBox.margin>
+                     </Label>
+                     <Label style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="Имя:" textFill="#1e293b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" left="20.0" /></VBox.margin>
+                     </Label>
+                     <Label style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="Отчество:" textFill="#1e293b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" left="20.0" /></VBox.margin>
+                     </Label>
+                     <Label style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="Номер телефона:" textFill="#1e293b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" left="20.0" /></VBox.margin>
+                     </Label>
+                  </children>
+               </VBox>
+               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="250.0">
+                  <children>
+                     <Label fx:id="loginLabel" style="-fx-font-family: 'Segoe UI';" text="-" textFill="#64748b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" top="15.0" /></VBox.margin>
+                     </Label>
+                     <Label fx:id="lastNameLabel" style="-fx-font-family: 'Segoe UI';" text="-" textFill="#64748b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" /></VBox.margin>
+                     </Label>
+                     <Label fx:id="firstNameLabel" style="-fx-font-family: 'Segoe UI';" text="-" textFill="#64748b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" /></VBox.margin>
+                     </Label>
+                     <Label fx:id="middleNameLabel" style="-fx-font-family: 'Segoe UI';" text="-" textFill="#64748b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" /></VBox.margin>
+                     </Label>
+                     <Label fx:id="phoneNumberLabel" style="-fx-font-family: 'Segoe UI';" text="-" textFill="#64748b">
+                        <font><Font size="18.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" /></VBox.margin>
+                     </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+
+         <HBox alignment="CENTER" layoutX="234.0" layoutY="340.0" prefHeight="67.0" prefWidth="501.0" spacing="20">
+            <children>
+               <Button mnemonicParsing="false" onAction="#handleAddInfo"
+                       style="-fx-background-radius: 10; -fx-font-size: 16; -fx-pref-height: 45; -fx-pref-width: 220; -fx-background-color: #8b5cf6; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;"
+                       text="Добавить информацию" textFill="white">
+                  <effect>
+                     <DropShadow color="rgba(139,92,246,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                  </effect>
+               </Button>
+               <Button mnemonicParsing="false" onAction="#handleUpdInfo"
+                       style="-fx-background-radius: 10; -fx-font-size: 16; -fx-pref-height: 45; -fx-pref-width: 220; -fx-background-color: #0ea5e9; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;"
+                       text="Изменить информацию" textFill="white">
+                  <effect>
+                     <DropShadow color="rgba(14,165,233,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
+
+         <Button fx:id="backButton" layoutX="37.0" layoutY="354.0" onAction="#handleBack"
+                 onMouseEntered="#handleMouseEnterExit" onMouseExited="#handleMouseExitExit"
+                 prefHeight="40.0" prefWidth="150.0"
+                 style="-fx-background-radius: 10; -fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-color: #64748b; -fx-text-fill: white;">
+            <effect>
+               <DropShadow color="rgba(100,116,139,0.3)" radius="6" offsetX="0" offsetY="3"/>
+            </effect>
+            Назад
+         </Button>
+
+         <ImageView fitHeight="150.0" fitWidth="174.0" layoutX="14.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
+
+         </ImageView>
+      </children>
+   </AnchorPane>
+</VBox>

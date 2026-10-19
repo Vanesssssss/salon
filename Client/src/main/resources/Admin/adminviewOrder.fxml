@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15"
+      style="-fx-padding: 20; -fx-background-color: #f8fafc;"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Admin.AdminviewOrderController">
+
+    <!-- Заголовок -->
+    <StackPane>
+        <Rectangle width="420" height="50" arcWidth="12" arcHeight="12">
+            <fill>
+                <LinearGradient startX="0" startY="0" endX="1" endY="0">
+                    <stops>
+                        <Stop offset="0.0" color="#6366f1"/>
+                        <Stop offset="1.0" color="#8b5cf6"/>
+                    </stops>
+                </LinearGradient>
+            </fill>
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.1)" radius="6" offsetX="0" offsetY="3"/>
+            </effect>
+        </Rectangle>
+        <Text text="Управление записями"
+              style="-fx-font-family: 'Segoe UI'; -fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;"/>
+    </StackPane>
+
+    <!-- Фильтры -->
+    <StackPane>
+        <Rectangle width="780" height="75" arcWidth="12" arcHeight="12" fill="white">
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.05)" radius="8" offsetX="0" offsetY="3"/>
+            </effect>
+        </Rectangle>
+
+        <VBox alignment="CENTER" spacing="8" style="-fx-padding: 10;">
+            <HBox alignment="CENTER" spacing="10">
+                <TextField fx:id="clientLastNameSearchField" onKeyReleased="#searchByClientLastName"
+                           prefHeight="32" prefWidth="150" promptText="Клиент (фамилия)"
+                           style="-fx-background-radius: 6; -fx-font-size: 13; -fx-padding: 0 8;"/>
+
+                <TextField fx:id="employeeLastNameSearchField" onKeyReleased="#searchByEmployeeLastName"
+                           prefHeight="32" prefWidth="150" promptText="Риелтор (фамилия)"
+                           style="-fx-background-radius: 6; -fx-font-size: 13; -fx-padding: 0 8;"/>
+
+                <HBox alignment="CENTER" spacing="5" style="-fx-background-radius: 6; -fx-background-color: #f1f5f9; -fx-padding: 0 8;">
+                    <Label text="Цена:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 13; -fx-text-fill: #475569;"/>
+                    <TextField fx:id="priceFromField" prefHeight="28" prefWidth="60" promptText="От"
+                               style="-fx-background-radius: 4; -fx-font-size: 13;"/>
+                    <Label text="—" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 13; -fx-text-fill: #94a3b8;"/>
+                    <TextField fx:id="priceToField" prefHeight="28" prefWidth="60" promptText="До"
+                               style="-fx-background-radius: 4; -fx-font-size: 13;"/>
+                </HBox>
+
+                <Button onAction="#applyFilters" text="Фильтр"
+                        style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 13; -fx-min-width: 80; -fx-min-height: 32; -fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 6;">
+                    <effect>
+                        <DropShadow color="rgba(99,102,241,0.25)" radius="5" offsetX="0" offsetY="2"/>
+                    </effect>
+                </Button>
+
+                <Button onAction="#sortAppointmentsByDate" text="Сортировка"
+                        style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 13; -fx-min-width: 100; -fx-min-height: 32; -fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 6;">
+                    <effect>
+                        <DropShadow color="rgba(139,92,246,0.25)" radius="5" offsetX="0" offsetY="2"/>
+                    </effect>
+                </Button>
+            </HBox>
+        </VBox>
+    </StackPane>
+
+    <!-- Таблица -->
+    <StackPane>
+        <Rectangle width="680" height="320" arcWidth="12" arcHeight="12" fill="white">
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.05)" radius="8" offsetX="0" offsetY="3"/>
+            </effect>
+        </Rectangle>
+
+        <TableView fx:id="appointmentsTable" prefHeight="310" prefWidth="670" style="-fx-font-size: 12;">
+            <columns>
+                <TableColumn fx:id="clientLastNameColumn" text="Клиент" prefWidth="75" />
+                <TableColumn fx:id="clientFirstNameColumn" text="Имя" prefWidth="70" />
+                <TableColumn fx:id="clientPhoneNumberColumn" text="Телефон" prefWidth="90" />
+                <TableColumn fx:id="employeeLastNameColumn" text="Риелтор" prefWidth="75" />
+                <TableColumn fx:id="employeeFirstNameColumn" text="Имя" prefWidth="70" />
+                <TableColumn fx:id="serviceNameColumn" text="Объект" prefWidth="100" />
+                <TableColumn fx:id="servicePriceColumn" text="Цена" prefWidth="70" />
+                <TableColumn fx:id="appointmentDateColumn" text="Дата" prefWidth="80" />
+                <TableColumn fx:id="appointmentTimeColumn" text="Время" prefWidth="70" />
+            </columns>
+        </TableView>
+    </StackPane>
+
+    <!-- Кнопки действий -->
+    <HBox alignment="CENTER" spacing="15" style="-fx-padding: 10 0 0 0;">
+        <Button fx:id="static" onAction="#handleStatic"
+                style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 13; -fx-min-width: 120; -fx-min-height: 35; -fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-background-radius: 8;"
+                onMouseEntered="#handleMouseEnter" onMouseExited="#handleMouseExit">
+            <effect>
+                <DropShadow color="rgba(14,165,233,0.25)" radius="6" offsetX="0" offsetY="3"/>
+            </effect>
+            <text>Аналитика</text>
+        </Button>
+
+        <Button fx:id="backButton" onAction="#handleBack"
+                style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 13; -fx-min-width: 100; -fx-min-height: 35; -fx-background-color: #64748b; -fx-text-fill: white; -fx-background-radius: 8;"
+                onMouseEntered="#handleMouseEnterExit" onMouseExited="#handleMouseExitExit">
+            <effect>
+                <DropShadow color="rgba(100,116,139,0.25)" radius="5" offsetX="0" offsetY="2"/>
+            </effect>
+            <text>Назад</text>
+        </Button>
+    </HBox>
+
+    <!-- Футер -->
+    <VBox alignment="CENTER" spacing="3" style="-fx-padding: 15 0 0 0;">
+        <HBox alignment="CENTER" spacing="8">
+            <Label text="© 2024 Salon System"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11; -fx-text-fill: #94a3b8;"/>
+            <Label text="v1.2"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11; -fx-text-fill: #94a3b8;"/>
+        </HBox>
+    </VBox>
+</VBox>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.paint.Color?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15"
+      style="-fx-padding: 25; -fx-background-color: linear-gradient(to bottom, #f0f4f8, #e2e8f0);"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Admin.WorkUsersAdminController">
+
+    <!-- Заголовок с тенью и градиентом -->
+    <StackPane>
+        <Rectangle width="750" height="60" arcWidth="15" arcHeight="15">
+            <fill>
+                <LinearGradient startX="0" startY="0" endX="1" endY="0">
+                    <stops>
+                        <Stop offset="0.0" color="#4f46e5"/>
+                        <Stop offset="1.0" color="#7c3aed"/>
+                    </stops>
+                </LinearGradient>
+            </fill>
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.1)" radius="8" offsetX="0" offsetY="4"/>
+            </effect>
+        </Rectangle>
+        <Text text="РАБОТА С ПОЛЬЗОВАТЕЛЯМИ"
+              style="-fx-font-family: 'Segoe UI'; -fx-font-size: 24; -fx-font-weight: bold; -fx-fill: white;">
+            <effect>
+                <DropShadow color="#c7d2fe" radius="1" offsetX="0" offsetY="1"/>
+            </effect>
+        </Text>
+    </StackPane>
+
+    <!-- Основной контент -->
+    <StackPane>
+        <Rectangle width="750" height="500" arcWidth="25" arcHeight="25" fill="white">
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.08)" radius="15" offsetX="0" offsetY="8"/>
+            </effect>
+        </Rectangle>
+
+        <VBox alignment="TOP_CENTER" spacing="15" style="-fx-padding: 25;">
+            <!-- Поиск и отображение пользователей -->
+            <HBox alignment="CENTER" spacing="20" style="-fx-padding: 0 0 10 0;">
+                <Button fx:id="viewAllUsersButton" onAction="#viewAllUsers"
+                        text="Показать всех"
+                        style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 180; -fx-min-height: 40; -fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-background-radius: 10;">
+                    <effect>
+                        <DropShadow color="rgba(14,165,233,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                    </effect>
+                </Button>
+
+                <TextField fx:id="loginTosearchField1" onKeyReleased="#handleSearch"
+                           prefHeight="40" prefWidth="300" promptText="Поиск по логину"
+                           style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
+            </HBox>
+
+            <!-- Список пользователей -->
+            <ListView fx:id="usersListView" prefHeight="200" prefWidth="300"
+                      style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
+
+            <!-- Управление пользователями -->
+            <GridPane alignment="CENTER" hgap="20" vgap="15" style="-fx-padding: 15 0;">
+                <columnConstraints>
+                    <ColumnConstraints prefWidth="300" halignment="CENTER"/>
+                    <ColumnConstraints prefWidth="300" halignment="CENTER"/>
+                </columnConstraints>
+
+                <!-- Удаление пользователя -->
+                <VBox spacing="5" GridPane.columnIndex="0">
+                    <Label text="Удаление пользователя:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #475569; -fx-font-weight: bold;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="loginToDeleteField" prefHeight="40" prefWidth="180" promptText="Логин"
+                                   style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
+                        <Button fx:id="deleteUserButton" onAction="#deleteUser"
+                                text="Удалить"
+                                style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 100; -fx-min-height: 40; -fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 10;">
+                            <effect>
+                                <DropShadow color="rgba(239,68,68,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                            </effect>
+                        </Button>
+                    </HBox>
+                </VBox>
+
+                <!-- Изменение роли -->
+                <VBox spacing="5" GridPane.columnIndex="1">
+                    <Label text="Изменение роли:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #475569; -fx-font-weight: bold;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="loginToUpdateField" prefHeight="40" prefWidth="150" promptText="Логин"
+                                   style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
+                        <TextField fx:id="newRoleField" prefHeight="40" prefWidth="150" promptText="Роль"
+                                   style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
+                        <Button fx:id="updateRoleButton" onAction="#updateUserRole"
+                                text="Изменить"
+                                style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 100; -fx-min-height: 40; -fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 10;">
+                            <effect>
+                                <DropShadow color="rgba(16,185,129,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                            </effect>
+                        </Button>
+                    </HBox>
+                </VBox>
+
+                <!-- Сортировка -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="Сортировка пользователей:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #475569; -fx-font-weight: bold;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <ComboBox fx:id="sortComboBox" editable="false" prefHeight="40" prefWidth="150" promptText="Сортировка"
+                                  style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="A-Z" />
+                                    <String fx:value="Z-A" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Button onAction="#handleSort"
+                                text="Применить"
+                                style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 100; -fx-min-height: 40; -fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 10;">
+                            <effect>
+                                <DropShadow color="rgba(139,92,246,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                            </effect>
+                        </Button>
+                    </HBox>
+                </VBox>
+
+                <!-- Фильтрация -->
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="Фильтр по роли:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #475569; -fx-font-weight: bold;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <ComboBox fx:id="roleComboBox" editable="false" prefHeight="40" prefWidth="150" promptText="Роль"
+                                  style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="client" />
+                                    <String fx:value="admin" />
+                                    <String fx:value="employee" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Button onAction="#handleFilter"
+                                text="Применить"
+                                style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 100; -fx-min-height: 40; -fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 10;">
+                            <effect>
+                                <DropShadow color="rgba(139,92,246,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                            </effect>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </StackPane>
+
+    <!-- Кнопка назад -->
+    <Button fx:id="backButton" onAction="#handleBack"
+            text="Назад"
+            style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-font-weight: bold; -fx-min-width: 180; -fx-min-height: 45; -fx-background-color: #64748b; -fx-text-fill: white; -fx-background-radius: 10;">
+        <effect>
+            <DropShadow color="rgba(100,116,139,0.3)" radius="6" offsetX="0" offsetY="3"/>
+        </effect>
+    </Button>
+
+    <!-- Футер -->
+    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+        <Label text="© 2023 Property Appraisal System"
+               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #64748b;"/>
+    </VBox>
+</VBox>

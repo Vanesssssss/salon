@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Salon>
+    <Name>Название парикмахерской</Name>
+    <Text>Описание парикмахерской</Text>
+    <Phone>+123456789</Phone>
+    <Address>Адрес парикмахерской</Address>
+</Salon>

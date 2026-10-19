@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" fillWidth="false" prefHeight="600.0" prefWidth="800.0" spacing="20" style="-fx-padding: 20;  -fx-background-image: url('/images/Fon.png'); -fx-background-size: cover; -fx-background-repeat: no-repeat; -fx-background-position: center;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Admin.AdminOurInfoController">
+    <HBox prefHeight="62.0" prefWidth="755.0" style="-fx-background-color: #A0522D; -fx-padding: 10; -fx-alignment: CENTER;"> <!-- Черный фон для заголовка -->
+        <Label style="-fx-font-family: 'Georgia'; -fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #FAFAFA;" text="О нас">
+            <HBox.margin>
+                <Insets />
+            </HBox.margin></Label>
+        <VBox.margin>
+            <Insets top="10.0" />
+        </VBox.margin> <!-- Черный текст -->
+    </HBox>
+    <HBox alignment="CENTER" prefHeight="337.0" prefWidth="414.0" spacing="10" style="-fx-background-color: #797979; -fx-background-radius: 15;">
+        <children>
+            <VBox alignment="CENTER_LEFT" spacing="10">
+                <children>
+                    <Label alignment="TOP_CENTER" prefHeight="45.0" prefWidth="98.0" style="-fx-font-family: 'Georgia'; -fx-font-size: 20; -fx-text-fill: white;" text="Название:">
+                  <VBox.margin>
+                     <Insets top="15.0" />
+                  </VBox.margin></Label>
+                    <Label alignment="TOP_CENTER" prefHeight="150.0" prefWidth="58.0" style="-fx-font-family: 'Georgia'; -fx-font-size: 20; -fx-text-fill: white;" text="Текст:">
+                  <VBox.margin>
+                     <Insets top="15.0" />
+                  </VBox.margin></Label>
+                    <Label alignment="TOP_CENTER" prefHeight="32.0" prefWidth="79.0" style="-fx-font-family: 'Georgia'; -fx-font-size: 18; -fx-text-fill: white;" text="Телефон:">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin></Label>
+                    <Label alignment="TOP_CENTER" prefHeight="172.0" prefWidth="62.0" style="-fx-font-family: 'Georgia'; -fx-font-size: 20; -fx-text-fill: white;" text="Адрес:">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin></Label>
+                </children>
+            </VBox>
+            <VBox alignment="CENTER_RIGHT" spacing="10">
+                <children>
+                    <TextField fx:id="nameField" promptText="Scissors" style="-fx-font-family: 'Georgia'; -fx-font-size: 16;">
+                  <VBox.margin>
+                     <Insets bottom="10.0" top="5.0" />
+                  </VBox.margin></TextField>
+                    <TextField fx:id="textField" prefHeight="82.0" prefWidth="207.0" promptText="Добро пожаловать в парикмахерскую Scissors, место, где рождается ваш уникальный стиль и воплощаются самые смелые идеи! Мы — команда профессионалов, которые знают, что каждая стрижка, укладка или окрашивание — это не просто работа, а искусство." style="-fx-font-family: 'Georgia'; -fx-font-size: 16;">
+                  <VBox.margin>
+                     <Insets bottom="15.0" />
+                  </VBox.margin></TextField>
+                    <TextField fx:id="phoneField" promptText="375445671747" style="-fx-font-family: 'Georgia'; -fx-font-size: 16;">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></TextField>
+                    <TextField fx:id="addressField" prefHeight="93.0" prefWidth="207.0" promptText="Минск, пр. Дзержинского, д.95" style="-fx-font-family: 'Georgia'; -fx-font-size: 16;">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></TextField>
+                </children>
+            </VBox>
+        </children>
+    </HBox>
+   <HBox alignment="CENTER" prefHeight="54.0" prefWidth="415.0">
+      <children>
+          <Button fx:id="updInfo" onAction="#handleUpdInfo" onMouseEntered="#handleMouseEnter" onMouseExited="#handleMouseExit" style="-fx-background-radius: 15; -fx-font-family: 'Georgia'; -fx-font-size: 20; -fx-pref-width: 300; -fx-pref-height: 50; -fx-background-color: #A0522D; -fx-text-fill: #FFF8DC;" text="Изменить" />
+      </children>
+      <VBox.margin>
+         <Insets top="10.0" />
+      </VBox.margin>
+   </HBox>
+    <Button fx:id="backButton" onAction="#handleBack" onMouseEntered="#handleMouseEnterExit" onMouseExited="#handleMouseExitExit" prefHeight="37.0" prefWidth="220.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-font-family: 'Georgia'; -fx-font-size: 16; -fx-pref-width: 130; -fx-pref-height: 40; -fx-background-color: white; -fx-text-fill: black;  -fx-border-color: black; -fx-border-width: 2;" text="Назад" textFill="WHITE">
+        <VBox.margin>
+            <Insets top="5.0" />
+        </VBox.margin></Button>
+
+</VBox>

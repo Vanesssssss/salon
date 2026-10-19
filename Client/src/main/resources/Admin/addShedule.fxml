@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Integer?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="20"
+      style="-fx-padding: 25; -fx-background-color: linear-gradient(to bottom, #f0f4f8, #e2e8f0);"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Admin.AddScheduleController">
+
+    <!-- Заголовок с градиентом и тенью -->
+    <StackPane>
+        <Rectangle width="450" height="60" arcWidth="15" arcHeight="15">
+            <fill>
+                <LinearGradient startX="0" startY="0" endX="1" endY="0">
+                    <stops>
+                        <Stop offset="0.0" color="#4f46e5"/>
+                        <Stop offset="1.0" color="#7c3aed"/>
+                    </stops>
+                </LinearGradient>
+            </fill>
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.1)" radius="8" offsetX="0" offsetY="4"/>
+            </effect>
+        </Rectangle>
+        <Text text="Создать расписание"
+              style="-fx-font-family: 'Segoe UI'; -fx-font-size: 24; -fx-font-weight: bold; -fx-fill: white;"/>
+    </StackPane>
+
+    <!-- Основной контент -->
+    <HBox alignment="CENTER" spacing="50" style="-fx-padding: 20;">
+        <!-- Левая панель с декоративными элементами -->
+        <StackPane prefWidth="220">
+            <!-- Декоративные фигуры -->
+            <Circle radius="80" fill="#e0e7ff" />
+            <Circle radius="60" fill="#c7d2fe" />
+            <Circle radius="40" fill="#a5b4fc" />
+
+            <StackPane>
+                <Circle radius="30" fill="#4f46e5" />
+                <Text text="R" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 24; -fx-font-weight: bold; -fx-fill: white;"/>
+            </StackPane>
+        </StackPane>
+
+        <!-- Карточка с формой -->
+        <StackPane>
+            <!-- Фон карточки -->
+            <Rectangle width="500" height="400" arcWidth="25" arcHeight="25" fill="white">
+                <effect>
+                    <DropShadow color="rgba(0,0,0,0.08)" radius="15" offsetX="0" offsetY="8"/>
+                </effect>
+            </Rectangle>
+
+            <!-- Декоративные элементы фона -->
+            <Circle centerX="450" centerY="50" radius="30" fill="#eef2ff" />
+            <Circle centerX="50" centerY="350" radius="40" fill="#f5f3ff" />
+            <SVGPath fill="#ede9fe" content="M30,100 C70,50 120,80 150,60" strokeWidth="0" />
+
+            <VBox alignment="CENTER" spacing="20" style="-fx-padding: 30;">
+                <!-- Выбор мастера -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Мастер:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-text-fill: #334155;"/>
+                    <ComboBox fx:id="masterComboBox" prefWidth="250"
+                              style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+                </HBox>
+
+                <!-- Период работы -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Период:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-text-fill: #334155;"/>
+                    <DatePicker fx:id="startDatePicker" style="-fx-background-radius: 5;"/>
+                    <Label text="—" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16;"/>
+                    <DatePicker fx:id="endDatePicker" style="-fx-background-radius: 5;"/>
+                </HBox>
+
+                <!-- Время начала -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Начало:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-text-fill: #334155;"/>
+                    <ComboBox fx:id="startHourComboBox" style="-fx-background-radius: 5;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <Integer fx:value="9" />
+                                <Integer fx:value="10" />
+                                <Integer fx:value="11" />
+                                <Integer fx:value="12" />
+                                <Integer fx:value="13" />
+                                <Integer fx:value="14" />
+                                <Integer fx:value="15" />
+                                <Integer fx:value="16" />
+                                <Integer fx:value="17" />
+                                <Integer fx:value="18" />
+                                <Integer fx:value="19" />
+                                <Integer fx:value="20" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Label text=":" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16;"/>
+                    <ComboBox fx:id="startMinuteComboBox" style="-fx-background-radius: 5;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <Integer fx:value="0" />
+                                <Integer fx:value="30" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </HBox>
+
+                <!-- Время окончания -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Окончание:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-text-fill: #334155;"/>
+                    <ComboBox fx:id="endHourComboBox" style="-fx-background-radius: 5;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <Integer fx:value="9" />
+                                <Integer fx:value="10" />
+                                <Integer fx:value="11" />
+                                <Integer fx:value="12" />
+                                <Integer fx:value="13" />
+                                <Integer fx:value="14" />
+                                <Integer fx:value="15" />
+                                <Integer fx:value="16" />
+                                <Integer fx:value="17" />
+                                <Integer fx:value="18" />
+                                <Integer fx:value="19" />
+                                <Integer fx:value="20" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Label text=":" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16;"/>
+                    <ComboBox fx:id="endMinuteComboBox" style="-fx-background-radius: 5;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <Integer fx:value="0" />
+                                <Integer fx:value="30" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </HBox>
+
+                <!-- Кнопки действий -->
+                <HBox alignment="CENTER" spacing="30" style="-fx-padding: 20 0 0 0;">
+                    <Button text="Создать" onAction="#createSchedule"
+                            style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-font-size: 16; -fx-min-width: 180; -fx-min-height: 45; -fx-background-color: #4f46e5; -fx-text-fill: white; -fx-background-radius: 10;"
+                            onMouseEntered="#handleMouseEnter" onMouseExited="#handleMouseExit">
+                        <effect>
+                            <DropShadow color="rgba(79,70,229,0.3)" radius="8" offsetX="0" offsetY="4"/>
+                        </effect>
+                    </Button>
+
+                    <Button fx:id="backButton" text="Назад" onAction="#handleBack"
+                            style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-font-size: 16; -fx-min-width: 120; -fx-min-height: 45; -fx-background-color: #64748b; -fx-text-fill: white; -fx-background-radius: 10;"
+                            onMouseEntered="#handleMouseEnterExit" onMouseExited="#handleMouseExitExit">
+                        <effect>
+                            <DropShadow color="rgba(100,116,139,0.3)" radius="6" offsetX="0" offsetY="3"/>
+                        </effect>
+                    </Button>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </HBox>
+
+    <!-- Футер -->
+    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+        <HBox alignment="CENTER" spacing="10">
+            <Label text="© 2023 Property Appraisal System"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #64748b;"/>
+            <Label text="•"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+            <Label text="v1.0.0"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+        </HBox>
+        <Label text="Техническая поддержка: support@example.com"
+               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11; -fx-text-fill: #6c757d;"/>
+    </VBox>
+</VBox>

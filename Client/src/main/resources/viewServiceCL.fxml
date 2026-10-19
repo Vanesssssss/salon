@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="20"
+      style="-fx-padding: 25; -fx-background-color: linear-gradient(to bottom, #f0f4f8, #e2e8f0);"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Сlient.ViewServiceCLController">
+
+    <children>
+        <!-- Заголовок с тенью и градиентом -->
+        <VBox alignment="CENTER" spacing="10">
+            <children>
+                <StackPane>
+                    <children>
+                        <Rectangle width="450" height="60" arcWidth="15" arcHeight="15">
+                            <fill>
+                                <LinearGradient startX="0" startY="0" endX="1" endY="0">
+                                    <stops>
+                                        <Stop offset="0.0" color="#8b5cf6"/>
+                                        <Stop offset="1.0" color="#7c3aed"/>
+                                    </stops>
+                                </LinearGradient>
+                            </fill>
+                            <effect>
+                                <DropShadow color="rgba(0,0,0,0.1)" radius="8" offsetX="0" offsetY="4"/>
+                            </effect>
+                        </Rectangle>
+                        <VBox alignment="CENTER" spacing="5">
+                            <children>
+                                <Text text="ПРОСМОТР ОБЪЕКТОВ"
+                                      style="-fx-font-family: 'Segoe UI'; -fx-font-size: 24; -fx-font-weight: bold; -fx-fill: white;">
+                                    <effect>
+                                        <DropShadow color="#ddd6fe" radius="1" offsetX="0" offsetY="1"/>
+                                    </effect>
+                                </Text>
+                                <Text text="SERVICE VIEW"
+                                      style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-fill: #e0e7ff;"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </StackPane>
+            </children>
+        </VBox>
+
+        <!-- Панель управления -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+            <children>
+                <!-- Поиск -->
+                <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+                    <Label text="Поиск:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #334155;"/>
+                    <TextField fx:id="searchField" onAction="#applySearch" prefHeight="35.0" prefWidth="250.0" promptText="Введите название"
+                               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1;"/>
+                    <Button fx:id="searchButton" onAction="#applySearch" text="Найти"
+                            style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 100; -fx-min-height: 35; -fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 5;">
+                        <effect>
+                            <DropShadow color="rgba(139,92,246,0.3)" radius="5" offsetX="0" offsetY="3"/>
+                        </effect>
+                    </Button>
+                </HBox>
+
+                <!-- Фильтр и сортировка -->
+                <HBox alignment="CENTER" spacing="15" style="-fx-padding: 10;">
+                    <Label text="Фильтр по цене:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #334155;"/>
+                    <TextField fx:id="minPriceField" prefHeight="35.0" prefWidth="80.0" promptText="От"
+                               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1;"/>
+                    <Label text="-" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #334155;"/>
+                    <TextField fx:id="maxPriceField" prefHeight="35.0" prefWidth="80.0" promptText="До"
+                               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cbd5e1;"/>
+                    <Button fx:id="filterButton" onAction="#applyFilter" text="Применить"
+                            style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 120; -fx-min-height: 35; -fx-background-color: #7c3aed; -fx-text-fill: white; -fx-background-radius: 5;">
+                        <effect>
+                            <DropShadow color="rgba(124,58,237,0.3)" radius="5" offsetX="0" offsetY="3"/>
+                        </effect>
+                    </Button>
+
+                    <Label text="Сортировка:" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #334155; -fx-padding: 0 0 0 20;"/>
+                    <ComboBox fx:id="sortComboBox" prefHeight="35.0" prefWidth="150.0" promptText="Порядок"
+                              style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-background-radius: 5;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="От А до Я" />
+                                <String fx:value="От Я до А" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Button fx:id="sortButton" onAction="#applySort" text="Сортировать"
+                            style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-font-weight: bold; -fx-min-width: 120; -fx-min-height: 35; -fx-background-color: #6d28d9; -fx-text-fill: white; -fx-background-radius: 5;">
+                        <effect>
+                            <DropShadow color="rgba(109,40,217,0.3)" radius="5" offsetX="0" offsetY="3"/>
+                        </effect>
+                    </Button>
+                </HBox>
+            </children>
+        </VBox>
+
+        <!-- Контейнер для услуг -->
+        <FlowPane fx:id="servicesFlowPane" hgap="20" prefHeight="300.0" prefWidth="800.0" style="-fx-padding: 15;" vgap="20" />
+
+        <!-- Кнопка назад -->
+        <Button fx:id="backButton" text="Назад"
+                onAction="#handleBack"
+                onMouseEntered="#handleMouseEnterExit"
+                onMouseExited="#handleMouseExitExit"
+                style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-font-weight: bold; -fx-min-width: 180; -fx-min-height: 45; -fx-background-color: #64748b; -fx-text-fill: white; -fx-background-radius: 10;">
+            <effect>
+                <DropShadow color="rgba(100,116,139,0.3)" radius="6" offsetX="0" offsetY="3"/>
+            </effect>
+            <VBox.margin>
+                <Insets top="20.0"/>
+            </VBox.margin>
+        </Button>
+
+        <!-- Футер -->
+        <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+            <children>
+                <HBox alignment="CENTER" spacing="10">
+                    <children>
+                        <Label text="© 2023 Property Appraisal System"
+                               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #64748b;"/>
+                        <Label text="•"
+                               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+                        <Label text="v1.0.0"
+                               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+                    </children>
+                </HBox>
+                <Label text="Техническая поддержка: support@example.com"
+                       style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11; -fx-text-fill: #6c757d;"/>
+            </children>
+        </VBox>
+    </children>
+</VBox>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.effect.InnerShadow?>
+
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="20"
+      style="-fx-padding: 30; -fx-background-color: #f9fafb;"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.Admin.reviewAdminController">
+
+    <!-- Заголовок с градиентом -->
+    <StackPane>
+        <Rectangle width="420" height="60" arcWidth="15" arcHeight="15">
+            <fill>
+                <LinearGradient startX="0" startY="0" endX="1" endY="0">
+                    <stops>
+                        <Stop offset="0.0" color="#4f46e5"/>
+                        <Stop offset="1.0" color="#7c3aed"/>
+                    </stops>
+                </LinearGradient>
+            </fill>
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.12)" radius="10" offsetX="0" offsetY="5"/>
+            </effect>
+        </Rectangle>
+        <Text text="Управление отзывами"
+              style="-fx-font-family: 'Segoe UI'; -fx-font-size: 24; -fx-font-weight: bold; -fx-fill: white;">
+            <effect>
+                <InnerShadow blurType="GAUSSIAN" color="rgba(0,0,0,0.15)" radius="1" offsetX="0" offsetY="1"/>
+            </effect>
+        </Text>
+    </StackPane>
+
+    <!-- Панель управления -->
+    <StackPane>
+        <Rectangle width="600" height="70" arcWidth="15" arcHeight="15" fill="white">
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.06)" radius="10" offsetX="0" offsetY="4"/>
+            </effect>
+        </Rectangle>
+
+        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15;">
+            <VBox alignment="CENTER_LEFT" spacing="5">
+                <Label text="Сортировка по рейтингу"
+                       style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 14; -fx-text-fill: #334155;"/>
+                <HBox alignment="CENTER" spacing="10">
+                    <ComboBox fx:id="sortComboBox" prefHeight="36" prefWidth="180"
+                              style="-fx-background-radius: 8; -fx-font-size: 14;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="От низкого к высокому" />
+                                <String fx:value="От высокого к низкому" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+
+                    <Button fx:id="sortButton" onAction="#handleSortButtonClick" text="Применить"
+                            style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 14; -fx-min-width: 120; -fx-min-height: 36; -fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8;">
+                        <effect>
+                            <DropShadow color="rgba(99,102,241,0.3)" radius="6" offsetX="0" offsetY="3"/>
+                        </effect>
+                    </Button>
+                </HBox>
+            </VBox>
+
+            <Rectangle height="40" width="1" fill="#e2e8f0"/>
+
+            <Button fx:id="refreshButton" onAction="#refreshReviews" text="Обновить"
+                    style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 14; -fx-min-width: 100; -fx-min-height: 36; -fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 8;">
+                <effect>
+                    <DropShadow color="rgba(16,185,129,0.3)" radius="6" offsetX="0" offsetY="3"/>
+                </effect>
+            </Button>
+        </HBox>
+    </StackPane>
+
+    <!-- Список отзывов -->
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-border-color: transparent; -fx-padding: 5;">
+        <VBox fx:id="reviewsListContainer" alignment="TOP_CENTER" spacing="15" style="-fx-padding: 5;"/>
+    </ScrollPane>
+
+    <!-- Кнопка возврата -->
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="backButton" onAction="#handleBack" text="Вернуться в меню"
+                style="-fx-font-family: 'Segoe UI Semibold'; -fx-font-size: 14; -fx-min-width: 180; -fx-min-height: 40; -fx-background-color: #64748b; -fx-text-fill: white; -fx-background-radius: 8;">
+            <effect>
+                <DropShadow color="rgba(100,116,139,0.3)" radius="6" offsetX="0" offsetY="3"/>
+            </effect>
+        </Button>
+    </HBox>
+</VBox>

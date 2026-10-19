@@ -1,0 +1,270 @@
+package Controllers.Сlient;
+
+import POJO.Services;
+import ServerWORK.ConnectDB;
+import javafx.animation.ScaleTransition;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class AddServiceControllerCl {
+
+    @FXML
+    private TextField serviceName;
+    @FXML
+    private TextArea serviceDescription;
+    @FXML
+    private TextField servicePrice;
+    @FXML
+    private ComboBox<Integer> durationValue;
+    @FXML
+    private ComboBox<String> durationUnit;
+    @FXML
+    private Button addServiceButton;
+    @FXML
+    private Button backButton;
+
+    // Анимации для кнопок
+    private ScaleTransition addServiceScaleTransition;
+    private ScaleTransition backButtonScaleTransition;
+
+    @FXML
+    void initialize() {
+        // Настройка кнопки добавления услуги
+        addServiceButton.setOnAction(event -> addService());
+
+        // Настройка кнопки "Назад"
+        backButton.setOnAction(event -> handleBack());
+
+        // Заполнение ComboBox'ов
+        fillDurationComboBoxes();
+
+        // Инициализация анимаций
+        initAnimations();
+    }
+
+    /**
+     * Инициализирует анимации для кнопок
+     */
+    private void initAnimations() {
+        // Анимация для кнопки "Добавить услугу"
+        addServiceScaleTransition = new ScaleTransition(Duration.millis(150), addServiceButton);
+        addServiceButton.setScaleX(1.0);
+        addServiceButton.setScaleY(1.0);
+
+        // Анимация для кнопки "Назад"
+        backButtonScaleTransition = new ScaleTransition(Duration.millis(150), backButton);
+        backButton.setScaleX(1.0);
+        backButton.setScaleY(1.0);
+    }
+
+    // Метод для добавления услуги
+    @FXML
+    void addService() {
+        String name = serviceName.getText();
+        String description = serviceDescription.getText();
+        String priceText = servicePrice.getText();
+        Integer duration = durationValue.getValue();
+        String unit = durationUnit.getValue();
+
+        // Проверка на пустые поля
+        if (name.isEmpty() || description.isEmpty() || priceText.isEmpty() || duration == null || unit == null) {
+            showAlertWithEmptyFields();
+            return;
+        }
+
+        try {
+            double price = Double.parseDouble(priceText); // Преобразуем цену в double
+
+            // Создаем объект услуги
+            Services service = new Services();
+            service.setName(name);
+            service.setDescription(description);
+            service.setPrice(price);
+            service.setDuration(duration + " " + unit);  // Преобразуем длительность в строку
+
+            // Отправляем услугу на сервер
+            sendServiceToServer(service);
+        } catch (NumberFormatException e) {
+            showAlertWithInvalidPrice();
+        }
+    }
+
+    // Метод для отправки услуги на сервер
+    private void sendServiceToServer(Services service) {
+        try {
+            ConnectDB.user.sendMessage("addService");
+            ConnectDB.user.sendObject(service);
+            System.out.println("Услуга отправлена на сервер");
+
+            String mes = ConnectDB.user.readMessage();
+            if (mes.equals("Service added successfully")) {
+                showAlertWithSuccess();
+            } else {
+                showAlertWithError();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlertWithServerError();
+        }
+    }
+
+    // Заполнение ComboBox для длительности услуги
+    private void fillDurationComboBoxes() {
+        // Заполнение значений для durationValue (например, 1-60 минут)
+        for (int i = 1; i <= 60; i++) {
+            durationValue.getItems().add(i);
+        }
+
+        // Заполнение значений для durationUnit (например, "минуты", "часы")
+        durationUnit.getItems().addAll("минуты", "часы");
+    }
+
+    // Показать ошибку при пустых полях
+    static public void showAlertWithEmptyFields() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText("Ошибка: Пустые поля");
+        alert.setContentText("Пожалуйста, заполните все поля.");
+        alert.showAndWait();
+    }
+
+    // Показать ошибку при неправильной цене
+    static public void showAlertWithInvalidPrice() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText("Ошибка: Неверная цена");
+        alert.setContentText("Пожалуйста, введите корректную цену.");
+        alert.showAndWait();
+    }
+
+    // Показать успешное сообщение
+    static public void showAlertWithSuccess() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Успех");
+        alert.setHeaderText("Объект добавлена");
+        alert.setContentText("Объект был успешно добавлена.");
+        alert.showAndWait();
+    }
+
+    // Показать ошибку при добавлении услуги
+    static public void showAlertWithError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText("Ошибка: Добавление Объекта");
+        alert.setContentText("Произошла ошибка при добавлении Объекта. Попробуйте позже.");
+        alert.showAndWait();
+    }
+
+    // Показать ошибку сервера
+    static public void showAlertWithServerError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText("Ошибка сервера");
+        alert.setContentText("Не удалось подключиться к серверу. Попробуйте позже.");
+        alert.showAndWait();
+    }
+
+    // Обработчик кнопки "Назад"
+    @FXML
+    private void handleBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/windowClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Админ панель");
+            stage.setScene(new Scene(root));
+            stage.setWidth(1090);
+            stage.setHeight(720);
+            stage.show();
+
+            // Закрытие текущего окна добавления услуги
+            ((Stage) backButton.getScene().getWindow()).close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Стили для кнопки "Назад"
+    private static final String BACK_HOVER_STYLE =
+            "-fx-font-family: 'Segoe UI'; " +
+                    "-fx-font-size: 16; " +
+                    "-fx-font-weight: bold; " +
+                    "-fx-min-width: 180; " +
+                    "-fx-min-height: 45; " +
+                    "-fx-background-color: #475569; " +
+                    "-fx-text-fill: white; " +
+                    "-fx-background-radius: 10;";
+
+    private static final String BACK_DEFAULT_STYLE =
+            "-fx-font-family: 'Segoe UI'; " +
+                    "-fx-font-size: 16; " +
+                    "-fx-font-weight: bold; " +
+                    "-fx-min-width: 180; " +
+                    "-fx-min-height: 45; " +
+                    "-fx-background-color: #64748b; " +
+                    "-fx-text-fill: white; " +
+                    "-fx-background-radius: 10;";
+
+    @FXML
+    private void handleMouseEnterExit(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        if (button == backButton) {
+            button.setStyle(BACK_HOVER_STYLE);
+
+            // Анимация для кнопки "Назад"
+            backButtonScaleTransition.stop();
+            backButtonScaleTransition.setToX(1.05);
+            backButtonScaleTransition.setToY(1.05);
+            backButtonScaleTransition.play();
+        }
+    }
+
+    @FXML
+    private void handleMouseExitExit(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        if (button == backButton) {
+            button.setStyle(BACK_DEFAULT_STYLE);
+
+            // Анимация для кнопки "Назад"
+            backButtonScaleTransition.stop();
+            backButtonScaleTransition.setToX(1.0);
+            backButtonScaleTransition.setToY(1.0);
+            backButtonScaleTransition.play();
+        }
+    }
+
+    @FXML
+    private void handleMouseEnter(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        if (button == addServiceButton) {
+            button.setStyle("-fx-background-radius: 15; -fx-border-radius: 15; -fx-font-family: 'Georgia'; -fx-font-size: 20; -fx-pref-width: 200; -fx-pref-height: 50; -fx-background-color: #333333; -fx-text-fill: #FAFAFA;");
+
+            // Анимация для кнопки "Добавить услугу"
+            addServiceScaleTransition.stop();
+            addServiceScaleTransition.setToX(1.05);
+            addServiceScaleTransition.setToY(1.05);
+            addServiceScaleTransition.play();
+        }
+    }
+
+    @FXML
+    private void handleMouseExit(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        if (button == addServiceButton) {
+            button.setStyle("-fx-background-radius: 15; -fx-border-radius: 15; -fx-font-family: 'Georgia'; -fx-font-size: 20;  -fx-pref-width: 200; -fx-pref-height: 50; -fx-background-color:  #A0522D; -fx-text-fill: #FAFAFA;");
+
+            // Анимация для кнопки "Добавить услугу"
+            addServiceScaleTransition.stop();
+            addServiceScaleTransition.setToX(1.0);
+            addServiceScaleTransition.setToY(1.0);
+            addServiceScaleTransition.play();
+        }
+    }
+}

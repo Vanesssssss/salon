@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.DropShadow?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controllers.MainpageController"
+      fx:id="mainContainer"
+      alignment="CENTER"
+      spacing="25"
+      style="-fx-padding: 30; -fx-background-color: linear-gradient(to bottom, #f8f9fa, #e9ecef);">
+
+    <!-- Логотип и заголовок -->
+    <VBox alignment="CENTER" spacing="10">
+        <StackPane>
+            <!-- Упрощенная иконка дома -->
+            <StackPane>
+                <!-- Основание дома -->
+                <Rectangle width="80" height="60" fill="#0d6efd" arcWidth="5" arcHeight="5"/>
+
+                <!-- Крыша -->
+                <Rectangle width="90" height="20" fill="#0d6efd" arcWidth="5" arcHeight="5" translateY="-40"/>
+
+                <!-- Окна -->
+                <HBox alignment="CENTER" spacing="20">
+                    <Rectangle width="15" height="20" fill="#ffffff"/>
+                    <Rectangle width="15" height="20" fill="#ffffff"/>
+                </HBox>
+            </StackPane>
+        </StackPane>
+
+        <VBox alignment="CENTER" spacing="5">
+            <Text text="ОЦЕНКА НЕДВИЖИМОСТИ"
+                  style="-fx-font-family: 'Arial'; -fx-font-size: 24; -fx-font-weight: bold; -fx-fill: #212529; -fx-text-alignment: center;"
+                  textAlignment="CENTER"/>
+            <Text text="PROPERTY APPRAISAL SYSTEM"
+                  style="-fx-font-family: 'Arial'; -fx-font-size: 14; -fx-fill: #495057; -fx-text-alignment: center;"
+                  textAlignment="CENTER"/>
+        </VBox>
+    </VBox>
+
+    <!-- Основной контент -->
+    <VBox alignment="CENTER" spacing="20" style="-fx-padding: 0 20;">
+        <!-- Описание системы -->
+        <Text text="Автоматизированная система для профессиональной оценки рыночной стоимости недвижимости"
+              style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-fill: #495057; -fx-text-alignment: center;"
+              textAlignment="CENTER"
+              wrappingWidth="400"/>
+
+        <!-- Преимущества системы -->
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 15; -fx-background-color: #e3f2fd; -fx-background-radius: 10;">
+            <Label text="Ключевые возможности:" alignment="CENTER" style="-fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #0d47a1;"/>
+
+            <VBox alignment="CENTER_LEFT" spacing="5">
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Circle radius="5" fill="#198754"/>
+                    <Label text="Анализ рыночных данных" alignment="CENTER_LEFT" style="-fx-font-family: 'Segoe UI';"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Circle radius="5" fill="#198754"/>
+                    <Label text="Автоматизированные отчеты" alignment="CENTER_LEFT" style="-fx-font-family: 'Segoe UI';"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Circle radius="5" fill="#198754"/>
+                    <Label text="История оценок" alignment="CENTER_LEFT" style="-fx-font-family: 'Segoe UI';"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Circle radius="5" fill="#198754"/>
+                    <Label text="Сравнение объектов" alignment="CENTER_LEFT" style="-fx-font-family: 'Segoe UI';"/>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- Статистика -->
+        <GridPane alignment="CENTER" hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+
+            <VBox alignment="CENTER" style="-fx-padding: 10; -fx-background-color: #e8f5e9; -fx-background-radius: 10;">
+                <Text text="10 000+" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 22; -fx-font-weight: bold; -fx-fill: #2e7d32; -fx-text-alignment: center;"
+                      textAlignment="CENTER"/>
+                <Text text="оцененных объектов" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-fill: #388e3c; -fx-text-alignment: center;"
+                      textAlignment="CENTER"/>
+            </VBox>
+
+            <VBox alignment="CENTER" style="-fx-padding: 10; -fx-background-color: #fff3e0; -fx-background-radius: 10;">
+                <Text text="95%" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 22; -fx-font-weight: bold; -fx-fill: #ef6c00; -fx-text-alignment: center;"
+                      textAlignment="CENTER"/>
+                <Text text="точность оценок" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-fill: #f57c00; -fx-text-alignment: center;"
+                      textAlignment="CENTER"/>
+            </VBox>
+        </GridPane>
+    </VBox>
+
+    <!-- Кнопки входа и регистрации -->
+    <VBox alignment="CENTER" spacing="15" style="-fx-padding: 10;">
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="loginButton" text="Вход в систему" onAction="#handleLogin"
+                    style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-font-weight: bold; -fx-min-width: 180; -fx-min-height: 45; -fx-pref-width: 180; -fx-pref-height: 45; -fx-max-width: 180; -fx-max-height: 45; -fx-background-color: #0d6efd; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;"
+                    onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited"/>
+
+            <Button fx:id="registerButton" text="Регистрация" onAction="#handleRegister"
+                    style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16; -fx-font-weight: bold; -fx-min-width: 180; -fx-min-height: 45; -fx-pref-width: 180; -fx-pref-height: 45; -fx-max-width: 180; -fx-max-height: 45; -fx-background-color: #6c757d; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;"
+                    onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited"/>
+        </HBox>
+
+        <Label text="Начните работу с системой прямо сейчас" alignment="CENTER"
+               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14; -fx-text-fill: #495057;"/>
+    </VBox>
+
+    <!-- Футер -->
+    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+        <Separator prefWidth="400" style="-fx-padding: 0 0 10 0;"/>
+        <HBox alignment="CENTER" spacing="10">
+            <Label text="© 2023 Property Appraisal System" alignment="CENTER"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+            <Label text="•" alignment="CENTER"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+            <Label text="v1.0.0" alignment="CENTER"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+        </HBox>
+        <Label text="Техническая поддержка: support@example.com" alignment="CENTER"
+               style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11; -fx-text-fill: #6c757d;"/>
+    </VBox>
+</VBox>
