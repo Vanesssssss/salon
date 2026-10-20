@@ -1,0 +1,98 @@
+package Database;
+
+import POJO.AppointmentRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class AppointmentBookingTest {
+    private Connection connection;
+    private AppointmentDB appointments;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        connection = DriverManager.getConnection("jdbc:h2:mem:booking;MODE=MySQL");
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE services (servise_id INT PRIMARY KEY, duration VARCHAR(100))");
+            statement.execute("CREATE TABLE schedule_slots (employee_id INT, slot_date DATE, slot_time TIME, is_available BOOLEAN)");
+            statement.execute("CREATE TABLE appointments (client_id INT CHECK (client_id > 0), employee_id INT, " +
+                    "servise_id INT, slot_date DATE, slot_time TIME)");
+            statement.execute("INSERT INTO services VALUES (3, '2 часы')");
+        }
+        appointments = new AppointmentDB(connection);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        connection.close();
+    }
+
+    @Test
+    void reservesAllSlotsAndRejectsASecondBooking() throws Exception {
+        addSlot("10:00:00");
+        addSlot("11:00:00");
+        AppointmentRequest first = request(7);
+
+        assertTrue(appointments.createAppointment(first));
+        assertFalse(appointments.createAppointment(request(8)));
+        assertEquals(1, rowCount("appointments"));
+        assertEquals(0, availableSlotCount());
+        assertTrue(connection.getAutoCommit());
+    }
+
+    @Test
+    void rejectsMissingStartSlotWithoutWritingAnything() throws Exception {
+        addSlot("11:00:00");
+
+        assertFalse(appointments.createAppointment(request(7)));
+        assertEquals(0, rowCount("appointments"));
+        assertEquals(1, availableSlotCount());
+    }
+
+    @Test
+    void rollsBackReservationWhenAppointmentInsertFails() throws Exception {
+        addSlot("10:00:00");
+        addSlot("11:00:00");
+
+        assertThrows(java.sql.SQLException.class, () -> appointments.createAppointment(request(-1)));
+        assertEquals(0, rowCount("appointments"));
+        assertEquals(2, availableSlotCount());
+        assertTrue(connection.getAutoCommit());
+    }
+
+    private AppointmentRequest request(int clientId) {
+        return new AppointmentRequest(clientId, 2, 3, "2026-10-20", "10:00");
+    }
+
+    private void addSlot(String time) throws Exception {
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("INSERT INTO schedule_slots VALUES (2, DATE '2026-10-20', TIME '" + time + "', TRUE)");
+        }
+    }
+
+    private int availableSlotCount() throws Exception {
+        try (Statement statement = connection.createStatement();
+             ResultSet result = statement.executeQuery("SELECT COUNT(*) FROM schedule_slots WHERE is_available = TRUE")) {
+            result.next();
+            return result.getInt(1);
+        }
+    }
+
+    private int rowCount(String table) throws Exception {
+        try (Statement statement = connection.createStatement();
+             ResultSet result = statement.executeQuery("SELECT COUNT(*) FROM " + table)) {
+            result.next();
+            return result.getInt(1);
+        }
+    }
+}

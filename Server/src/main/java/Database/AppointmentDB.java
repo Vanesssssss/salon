@@ -3,6 +3,7 @@ package Database;
 import POJO.*;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,10 +13,15 @@ import java.util.List;
 
 public class AppointmentDB implements IntAppointmentDB {
     private static AppointmentDB instance;
-    private DatabaseConnection dbConnection;
+    private final Connection connection;
 
     private AppointmentDB() throws SQLException, ClassNotFoundException {
-        dbConnection = DatabaseConnection.getInstance();
+        DatabaseConnection.getInstance();
+        connection = DatabaseConnection.dbConnection;
+    }
+
+    AppointmentDB(Connection connection) {
+        this.connection = connection;
     }
 
     public static AppointmentDB getInstance() throws SQLException, ClassNotFoundException {
@@ -52,50 +58,85 @@ public class AppointmentDB implements IntAppointmentDB {
     public boolean createAppointment(AppointmentRequest appointmentRequest) throws SQLException {
         String slotDate = appointmentRequest.getSlotDate();
         String slotTime = appointmentRequest.getSlotTime();
-        int serviceId = appointmentRequest.getServiceId();  // ID услуги
+        // The application shares one JDBC connection between client handlers.
+        // Synchronize local transactions; row locks also coordinate other connections.
+        synchronized (connection) {
+            int serviceDuration = getServiceDuration(appointmentRequest.getServiceId());
+            if (serviceDuration <= 0 || !isWithinWorkingHours(slotDate, slotTime, serviceDuration)) {
+                return false;
+            }
+            LocalTime start = LocalTime.parse(slotTime);
+            LocalTime end = start.plusMinutes(serviceDuration);
 
-        // Получаем продолжительность услуги из таблицы services
-        int serviceDuration = getServiceDuration(serviceId);
+            if (!connection.getAutoCommit()) {
+                throw new SQLException("Appointment connection already has an active transaction");
+            }
+            connection.setAutoCommit(false);
+            try {
+                String lockQuery = "SELECT slot_time, is_available FROM schedule_slots " +
+                        "WHERE employee_id = ? AND slot_date = ? AND slot_time >= ? AND slot_time < ? " +
+                        "ORDER BY slot_time FOR UPDATE";
+                int slotCount = 0;
+                boolean startExists = false;
+                boolean allAvailable = true;
+                try (PreparedStatement stmt = connection.prepareStatement(lockQuery)) {
+                    stmt.setInt(1, appointmentRequest.getEmployeeId());
+                    stmt.setString(2, slotDate);
+                    stmt.setString(3, start.toString());
+                    stmt.setString(4, end.toString());
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        while (rs.next()) {
+                            slotCount++;
+                            startExists |= rs.getTime("slot_time").toLocalTime().equals(start);
+                            allAvailable &= rs.getBoolean("is_available");
+                        }
+                    }
+                }
+                if (!startExists || !allAvailable) {
+                    connection.rollback();
+                    return false;
+                }
 
-        if (serviceDuration == -1) {
-            System.out.println("Продолжительность услуги не найдена для serviceId: " + serviceId);
-            return false; // Ошибка, если не найдена продолжительность услуги
-        }
+                String reserveQuery = "UPDATE schedule_slots SET is_available = 0 " +
+                        "WHERE employee_id = ? AND slot_date = ? AND slot_time >= ? AND slot_time < ? " +
+                        "AND is_available = 1";
+                try (PreparedStatement stmt = connection.prepareStatement(reserveQuery)) {
+                    stmt.setInt(1, appointmentRequest.getEmployeeId());
+                    stmt.setString(2, slotDate);
+                    stmt.setString(3, start.toString());
+                    stmt.setString(4, end.toString());
+                    if (stmt.executeUpdate() != slotCount) {
+                        connection.rollback();
+                        return false;
+                    }
+                }
 
-        // Проверка, не выходит ли время записи за пределы рабочего времени
-        if (!isWithinWorkingHours(slotDate, slotTime, serviceDuration)) {
-            System.out.println("Время записи выходит за пределы рабочего времени: " + slotDate + " " + slotTime);
-            return false; // если не в рабочем времени
-        }
-
-        // Проверка, занят ли выбранный слот
-        if (isSlotOccupied(slotDate, slotTime, serviceDuration, appointmentRequest.getEmployeeId())) {
-            System.out.println("Слот занят: " + slotDate + " " + slotTime);
-            return false; // если слот занят
-        }
-
-        // Если слот свободен и время в пределах рабочего времени, добавляем запись в базу
-        String query = "INSERT INTO appointments (client_id, employee_id, servise_id, slot_date, slot_time) VALUES (?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = DatabaseConnection.dbConnection.prepareStatement(query)) {
-            stmt.setInt(1, appointmentRequest.getClientId());
-            stmt.setInt(2, appointmentRequest.getEmployeeId());
-            stmt.setInt(3, serviceId);
-            stmt.setString(4, appointmentRequest.getSlotDate());
-            stmt.setString(5, slotTime);  // Используем только время
-
-            int rowsAffected = stmt.executeUpdate();
-
-            // Если запись успешно добавлена, блокируем слот на соответствующее время
-            if (rowsAffected > 0) {
-                blockSlot(slotDate, slotTime, serviceDuration, appointmentRequest.getEmployeeId()); // блокируем слот
-                System.out.println("Запись успешно добавлена для клиента " + appointmentRequest.getClientId() + " на слот: " + slotDate + " " + slotTime);
+                String insertQuery = "INSERT INTO appointments " +
+                        "(client_id, employee_id, servise_id, slot_date, slot_time) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement stmt = connection.prepareStatement(insertQuery)) {
+                    stmt.setInt(1, appointmentRequest.getClientId());
+                    stmt.setInt(2, appointmentRequest.getEmployeeId());
+                    stmt.setInt(3, appointmentRequest.getServiceId());
+                    stmt.setString(4, slotDate);
+                    stmt.setString(5, slotTime);
+                    if (stmt.executeUpdate() != 1) {
+                        connection.rollback();
+                        return false;
+                    }
+                }
+                connection.commit();
                 return true;
-            } else {
-                System.out.println("Не удалось добавить запись для клиента " + appointmentRequest.getClientId() + " на слот: " + slotDate + " " + slotTime);
+            } catch (SQLException | RuntimeException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
             }
         }
-        return false;
     }
 
     public boolean isWithinWorkingHours(String slotDate, String slotTime, int serviceDuration) {
@@ -118,7 +159,7 @@ public class AppointmentDB implements IntAppointmentDB {
     public int getServiceDuration(int serviceId) throws SQLException {
         String query = "SELECT duration FROM services WHERE servise_id = ?";
 
-        try (PreparedStatement stmt = DatabaseConnection.dbConnection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, serviceId);
             ResultSet rs = stmt.executeQuery();
 
