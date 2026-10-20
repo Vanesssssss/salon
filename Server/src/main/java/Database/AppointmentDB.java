@@ -443,45 +443,72 @@ public class AppointmentDB implements IntAppointmentDB {
     }
 
     public boolean deleteAppointmentById(int appointmentId) throws SQLException {
-        String query = "DELETE FROM appointments WHERE appointment_id = ?";
+        synchronized (connection) {
+            if (!connection.getAutoCommit()) {
+                throw new SQLException("Appointment connection already has an active transaction");
+            }
+            connection.setAutoCommit(false);
+            try {
+                String lookupQuery = "SELECT employee_id, servise_id, slot_date, slot_time " +
+                        "FROM appointments WHERE appointment_id = ? FOR UPDATE";
+                int employeeId;
+                int serviceId;
+                String slotDate;
+                LocalTime start;
+                try (PreparedStatement stmt = connection.prepareStatement(lookupQuery)) {
+                    stmt.setInt(1, appointmentId);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (!rs.next()) {
+                            connection.rollback();
+                            return false;
+                        }
+                        employeeId = rs.getInt("employee_id");
+                        serviceId = rs.getInt("servise_id");
+                        slotDate = rs.getDate("slot_date").toString();
+                        start = rs.getTime("slot_time").toLocalTime();
+                    }
+                }
 
-        // Получение информации о записи перед удалением
-        AppointmentRecord record = getAppointmentRecordById(appointmentId);
-        if (record == null) {
-            System.out.println("Запись с ID " + appointmentId + " не найдена.");
-            return false;
-        }
+                int duration = getServiceDuration(serviceId);
+                if (duration <= 0) {
+                    throw new SQLException("Duration not found for service " + serviceId);
+                }
+                LocalTime end = start.plusMinutes(duration);
 
-        // Разблокировка слотов, связанных с записью
-        unblockSlot(record.getAppointmentDate(), record.getAppointmentTime(), record.getServiseId(), record.getEmployeeId());
+                try (PreparedStatement stmt = connection.prepareStatement(
+                        "DELETE FROM appointments WHERE appointment_id = ?")) {
+                    stmt.setInt(1, appointmentId);
+                    if (stmt.executeUpdate() != 1) {
+                        connection.rollback();
+                        return false;
+                    }
+                }
 
-        try (PreparedStatement stmt = DatabaseConnection.dbConnection.prepareStatement(query)) {
-            stmt.setInt(1, appointmentId);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        }
-    }
-
-    // Метод для разблокировки занятых слотов
-    private void unblockSlot(String slotDate, String slotTime, int serviceId, int employeeId) throws SQLException {
-        int serviceDuration = getServiceDuration(serviceId);
-        if (serviceDuration == -1) {
-            System.out.println("Ошибка: Не удалось получить продолжительность услуги для разблокировки слотов.");
-            return;
-        }
-
-        String query = "UPDATE schedule_slots SET is_available = 1 " +
-                "WHERE employee_id = ? AND slot_date = ? AND slot_time >= ? AND slot_time < ?";
-
-        LocalTime appointmentTime = LocalTime.parse(slotTime);
-        LocalTime endTime = appointmentTime.plusMinutes(serviceDuration);
-
-        try (PreparedStatement stmt = DatabaseConnection.dbConnection.prepareStatement(query)) {
-            stmt.setInt(1, employeeId);
-            stmt.setString(2, slotDate);
-            stmt.setString(3, appointmentTime.toString());
-            stmt.setString(4, endTime.toString());
-            stmt.executeUpdate();
+                String releaseQuery = "UPDATE schedule_slots SET is_available = 1 " +
+                        "WHERE employee_id = ? AND slot_date = ? AND slot_time >= ? AND slot_time < ? " +
+                        "AND is_available = 0";
+                try (PreparedStatement stmt = connection.prepareStatement(releaseQuery)) {
+                    stmt.setInt(1, employeeId);
+                    stmt.setString(2, slotDate);
+                    stmt.setString(3, start.toString());
+                    stmt.setString(4, end.toString());
+                    if (stmt.executeUpdate() == 0) {
+                        connection.rollback();
+                        return false;
+                    }
+                }
+                connection.commit();
+                return true;
+            } catch (SQLException | RuntimeException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
         }
     }
 }
