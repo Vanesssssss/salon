@@ -79,6 +79,8 @@ public class AppointmentDB implements IntAppointmentDB {
                 int slotCount = 0;
                 boolean startExists = false;
                 boolean allAvailable = true;
+                boolean continuous = true;
+                LocalTime expectedSlot = start;
                 try (PreparedStatement stmt = connection.prepareStatement(lockQuery)) {
                     stmt.setInt(1, appointmentRequest.getEmployeeId());
                     stmt.setString(2, slotDate);
@@ -87,12 +89,15 @@ public class AppointmentDB implements IntAppointmentDB {
                     try (ResultSet rs = stmt.executeQuery()) {
                         while (rs.next()) {
                             slotCount++;
-                            startExists |= rs.getTime("slot_time").toLocalTime().equals(start);
+                            LocalTime actualSlot = rs.getTime("slot_time").toLocalTime();
+                            startExists |= actualSlot.equals(start);
+                            continuous &= actualSlot.equals(expectedSlot);
+                            expectedSlot = expectedSlot.plusHours(1);
                             allAvailable &= rs.getBoolean("is_available");
                         }
                     }
                 }
-                if (!startExists || !allAvailable) {
+                if (!startExists || !allAvailable || !continuous || expectedSlot.isBefore(end)) {
                     connection.rollback();
                     return false;
                 }
@@ -142,13 +147,13 @@ public class AppointmentDB implements IntAppointmentDB {
     public boolean isWithinWorkingHours(String slotDate, String slotTime, int serviceDuration) {
         try {
             LocalTime appointmentTime = LocalTime.parse(slotTime);
-            LocalTime endTime = appointmentTime.plusMinutes(serviceDuration);
-
             LocalTime startOfWork = LocalTime.of(9, 0);  // начало рабочего дня
             LocalTime endOfWork = LocalTime.of(18, 0);  // конец рабочего дня
 
             // Проверяем, чтобы время записи и окончания попало в рабочие часы
-            return !appointmentTime.isBefore(startOfWork) && !endTime.isAfter(endOfWork);
+            long endSecond = appointmentTime.toSecondOfDay() + serviceDuration * 60L;
+            return serviceDuration > 0 && !appointmentTime.isBefore(startOfWork)
+                    && endSecond <= endOfWork.toSecondOfDay();
         } catch (Exception e) {
             System.out.println("Ошибка при проверке рабочего времени: " + e.getMessage());
             return false;
